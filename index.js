@@ -28,6 +28,13 @@ client.connect(err => {
     })
   })
 
+  app.delete('/deleteFood/:id', (req, res) => {
+    foodCollection.deleteOne({ _id: ObjectId(req.params.id) })
+      .then(result => {
+        res.send(result.deletedCount > 0)
+      })
+  })
+
   app.get('/food/:id', (req, res) => {
     foodCollection.find({_id: ObjectId(req.params.id)})
     .toArray((err , items) => {
@@ -37,16 +44,12 @@ client.connect(err => {
     
   app.post('/addFood', (req, res) => {
     const newFood = req.body;
-    console.log('adding new food', newFood);
     foodCollection.insertOne(newFood)
     .then(result => {
-      console.log('inserted count', result.insertedCount);
       res.send(result.insertedCount > 0)
     })
   })
 
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+app.listen(port);
